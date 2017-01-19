@@ -1,0 +1,37 @@
+#
+# Managed by powerdns::server::authoritive puppet module
+#
+
+setuid=<%= @user %>
+setgid=<%= @user %>
+
+api=yes
+api-key=<%= @password %>
+
+<% if @postgresql -%>
+# PostgreSQL configuration
+launch=gpgsql
+gpgsql-host=<%= @postgresql['host'] %>
+gpgsql-port=<%= @postgresql['port'] %>
+gpgsql-user=<%= @postgresql['user'] %>
+gpgsql-password=<%= @postgresql['password'] %>
+gpgsql-dbname=<%= @postgresql['database'] %>
+gpgsql-dnssec=no
+<% else -%>
+# SQLite configuration
+launch=gsqlite3
+gsqlite3-database=<%= @defined_sqlite_path %>
+gsqlite3-pragma-synchronous=0
+gsqlite3-pragma-foreign-keys=yes
+<% end -%>
+
+<% if @recursor -%>
+recursor=<%= @recursor['host'] %>:<%= @recursor['port'] %>
+<% end -%>
+
+local-address=0.0.0.0
+local-port=<%= @port %>
+
+webserver=yes
+webserver-address=0.0.0.0
+webserver-port=<%= @api_port %>
